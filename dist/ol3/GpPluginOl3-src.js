@@ -9,8 +9,8 @@
  * copyright CeCILL-B
  * copyright IGN
  * @author IGN
- * @version 0.10.0
- * @date 2016-06-13
+ * @version 0.10.1
+ * @date 2017-02-10
  *
  */
 /*!
@@ -23103,27 +23103,29 @@ Ol3ControlsGeoportalAttribution = function (ol, LayerUtils) {
                 var zoom = view.getZoom();
                 var layers = map.getLayers().getArray();
                 for (var i = 0; i < layers.length; i++) {
-                    var src = layers[i].getSource();
-                    var srcAttributionHtml = '';
-                    visibility = layers[i].getVisible();
-                    originators = src._originators;
-                    if (originators && visibility) {
-                        var layerAttributions = LayerUtils.getAttributions({
-                            extent: standardExtent,
-                            crs: mapProjection,
-                            zoom: zoom,
-                            visibility: visibility,
-                            originators: originators
-                        });
-                        for (var j = 0; j < layerAttributions.length; j++) {
-                            var attributionj = layerAttributions[j];
-                            if (!mapAttributions || !mapAttributions[attributionj]) {
-                                srcAttributionHtml += attributionj;
-                                mapAttributions[attributionj] = true;
+                    if (layers[i].getSource !== undefined) {
+                        var src = layers[i].getSource();
+                        var srcAttributionHtml = '';
+                        visibility = layers[i].getVisible();
+                        originators = src._originators;
+                        if (originators && visibility) {
+                            var layerAttributions = LayerUtils.getAttributions({
+                                extent: standardExtent,
+                                crs: mapProjection,
+                                zoom: zoom,
+                                visibility: visibility,
+                                originators: originators
+                            });
+                            for (var j = 0; j < layerAttributions.length; j++) {
+                                var attributionj = layerAttributions[j];
+                                if (!mapAttributions || !mapAttributions[attributionj]) {
+                                    srcAttributionHtml += attributionj;
+                                    mapAttributions[attributionj] = true;
+                                }
                             }
+                            var olAttribution = new ol.Attribution({ html: srcAttributionHtml });
+                            src.setAttributions([olAttribution]);
                         }
-                        var olAttribution = new ol.Attribution({ html: srcAttributionHtml });
-                        src.setAttributions([olAttribution]);
                     }
                 }
             }, this);
@@ -23133,8 +23135,8 @@ Ol3ControlsGeoportalAttribution = function (ol, LayerUtils) {
     return GeoportalAttribution;
 }(ol, CommonUtilsLayerUtils);
 Ol3GpPluginOl3 = function (ol, Gp, LayerUtils, CRS, SourceWMTS, SourceWMS, LayerWMTS, LayerWMS, LayerSwitcher, SearchEngine, MousePosition, Drawing, Route, Isocurve, ReverseGeocode, GeoportalAttribution) {
-    Gp.ol3extVersion = '0.10.0';
-    Gp.ol3extDate = '2016-06-13';
+    Gp.ol3extVersion = '0.10.1';
+    Gp.ol3extDate = '2017-02-10';
     Gp.LayerUtils = LayerUtils;
     CRS.runDefault();
     ol.source.GeoportalWMTS = SourceWMTS;

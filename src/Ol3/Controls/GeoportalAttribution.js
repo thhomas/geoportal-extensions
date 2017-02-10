@@ -88,42 +88,45 @@ define(["ol", "Common/Utils/LayerUtils"], function (ol, LayerUtils) {
                     // loop on layers to get their originators, if there is at least one originator, and if layer is visible.
                     for (var i = 0; i < layers.length; i++ ) {
 
-                        var src = layers[i].getSource();
+                        if(layers[i].getSource !== undefined) {
 
-                        // srcAttributionHtml : html, composed of all layer's attributions html
-                        var srcAttributionHtml = "";
+                            var src = layers[i].getSource();
 
-                        visibility = layers[i].getVisible();
-                        originators = src._originators;
+                            // srcAttributionHtml : html, composed of all layer's attributions html
+                            var srcAttributionHtml = "";
 
-                        if ( originators && visibility ) {
+                            visibility = layers[i].getVisible();
+                            originators = src._originators;
 
-                            // get layer's attributions array
-                            var layerAttributions = LayerUtils.getAttributions({
-                                extent : standardExtent,
-                                crs : mapProjection,
-                                zoom : zoom,
-                                visibility : visibility,
-                                originators : originators
-                            });
+                            if ( originators && visibility ) {
 
-                            for ( var j = 0; j < layerAttributions.length; j++ ) {
-                                var attributionj = layerAttributions[j];
-                                // check that this attribution hasn't been added yet for another layer
-                                if ( !mapAttributions || !mapAttributions[attributionj] ) {
-                                    // add attribution html to source attributions html
-                                    srcAttributionHtml += attributionj;
+                                // get layer's attributions array
+                                var layerAttributions = LayerUtils.getAttributions({
+                                    extent : standardExtent,
+                                    crs : mapProjection,
+                                    zoom : zoom,
+                                    visibility : visibility,
+                                    originators : originators
+                                });
 
-                                    // add attribution to mapAttributions, to manage all layers attributions
-                                    mapAttributions[attributionj] = true;
-                                }
-                            };
+                                for ( var j = 0; j < layerAttributions.length; j++ ) {
+                                    var attributionj = layerAttributions[j];
+                                    // check that this attribution hasn't been added yet for another layer
+                                    if ( !mapAttributions || !mapAttributions[attributionj] ) {
+                                        // add attribution html to source attributions html
+                                        srcAttributionHtml += attributionj;
 
-                            // update source attribution
-                            var olAttribution = new ol.Attribution({
-                                html : srcAttributionHtml
-                            });
-                            src.setAttributions([olAttribution]);
+                                        // add attribution to mapAttributions, to manage all layers attributions
+                                        mapAttributions[attributionj] = true;
+                                    }
+                                };
+
+                                // update source attribution
+                                var olAttribution = new ol.Attribution({
+                                    html : srcAttributionHtml
+                                });
+                                src.setAttributions([olAttribution]);
+                            }
                         }
                     }
                 },
